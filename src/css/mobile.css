@@ -1,0 +1,18 @@
+html{
+	font-size: 50px;
+}
+
+#mobile_header{
+
+}
+
+#mobile_header a img{
+	height: 50px;
+	width: 50px;
+	vertical-align: top;
+}
+
+#mobile_header a span{
+	font-size: 30px;
+	line-height: 50px;
+}

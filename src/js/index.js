@@ -4,9 +4,9 @@ import {Router,Route,hashHistory} from 'react-router'
 import MediaQuery from 'react-responsive' 
 
 import PCIndex from './components/pc/pc_index'
-//import MobileIndex from './components/mobile_index'
+import MobileIndex from './components/mobile/mobile_index'
 
-import 'antd/lib/button/style/css'
+import 'antd/dist/antd.css'
 
 class Root extends React.Component
 {
@@ -21,7 +21,7 @@ class Root extends React.Component
 					<PCIndex/>
 				</MediaQuery>
 				<MediaQuery query="(max-device-width:1224px)">
-					<div>这里是手机页</div>
+					<MobileIndex/>
 				</MediaQuery>
 			</div>
 		)

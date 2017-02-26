@@ -1,0 +1,22 @@
+html{
+	font-size: 50px;
+}
+
+#pc_header{
+
+}
+
+#pc_header a img{
+	height: 50px;
+	width: 50px;
+	vertical-align: top;
+}
+
+#pc_header a span{
+	font-size: 30px;
+	line-height: 50px;
+}
+
+#pc_footer{
+	text-align: center;
+}
