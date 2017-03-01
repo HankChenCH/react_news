@@ -14,6 +14,7 @@ class PCHeader extends React.Component
 		this.state = {
 			current:'top',
 			modalVisible: false,
+			hasLogined: false,
 			action: 'login',
 			userNickName: '',
 			userid: 0
@@ -44,8 +45,32 @@ class PCHeader extends React.Component
 	};
 	onSubmitHandle(e){
 		e.preventDefault();
+		var myFetchOptions = {
+			method: 'GET',
+		}
 		var formData = this.props.form.getFieldsValue();
-		console.log("form data is :",formData);
+		//console.log("form data is :",formData);
+		fetch("http://newsapi.gugujiankong.com/Handler.ashx?action=" + this.state.action
+			+ "&username=" + formData.userName + "&password=" + formData.password
+			+ "&r_userName=" + formData.r_userName + "&r_password=" + formData.r_password
+			+ "&r_confirmPassword=" + formData.r_confirmPassword,myFetchOptions)
+			.then(response => console.log(response))
+			// .then(json => {
+			// 	this.setState({
+			// 		userNickName: json.NickUserName,
+			// 		userid: json.UserId,
+			// 		hasLogined: true
+			// 	});
+			// });
+		message.success("请求成功");
+		this.setModalVisible(false);		
+	};
+	callback(key){
+		if(key == 1){
+			this.setState({action:'login'})
+		}else{
+			this.setState({action:'register'})
+		}
 	};
 	render(){
 		let {getFieldDecorator} = this.props.form;
@@ -103,7 +128,26 @@ class PCHeader extends React.Component
 					</Menu>
 					<Modal title="用户中心" warpClassName="vertical-center-modal" visible={this.state.modalVisible}
 					onOk={this.onhandleOk.bind(this)} onCancel={this.onhandleCancel.bind(this)}>
-					<Tabs type="card">
+					<Tabs type="card" onChange={this.callback.bind(this)}>
+						<TabPane tab="登录" key="1">
+							<Form horizontal onSubmit={this.onSubmitHandle.bind(this)}>
+								<FormItem label="用户">
+								  {getFieldDecorator('userName', {
+						              rules: [{ required: true, message: 'Please input your username!' }],
+						          })(
+						            <Input placeholder="请输入您的账号" />
+						          )}
+								</FormItem>
+								<FormItem label="密码">
+								  {getFieldDecorator('password', {
+						              rules: [{ required: true, message: 'Please input your password!' }],
+						          })(
+						            <Input type="password" placeholder="请输入您的密码" />
+						          )}
+								</FormItem>
+								<Button type="primary" htmlType="submit">登录</Button>
+							</Form>
+						</TabPane>
 						<TabPane tab="注册" key="2">
 							<Form horizontal onSubmit={this.onSubmitHandle.bind(this)}>
 								<FormItem label="用户">
