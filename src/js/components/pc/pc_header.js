@@ -20,6 +20,15 @@ class PCHeader extends React.Component
 			userid: 0
 		}
 	};
+	componentWillMount() {
+		if(localStorage.userid != ''){
+			this.setState({
+				hasLogined: true,
+				userNickName: localStorage.userNickName,
+				userid: localStorage.userid
+			})
+		}
+	}
 	setModalVisible(value){
 		this.setState({
 			modalVisible: value
@@ -54,16 +63,23 @@ class PCHeader extends React.Component
 			+ "&username=" + formData.userName + "&password=" + formData.password
 			+ "&r_userName=" + formData.r_userName + "&r_password=" + formData.r_password
 			+ "&r_confirmPassword=" + formData.r_confirmPassword,myFetchOptions)
-			.then(response => console.log(response))
-			// .then(json => {
-			// 	this.setState({
-			// 		userNickName: json.NickUserName,
-			// 		userid: json.UserId,
-			// 		hasLogined: true
-			// 	});
-			// });
-		message.success("请求成功");
-		this.setModalVisible(false);		
+			.then(response => response.json())
+			.then(json => {
+				this.setState({
+					userNickName: json.NickUserName,
+					userid: json.UserId,
+					hasLogined: true
+				});
+				localStorage.userNickName = json.NickUserName;
+				localStorage.userid = json.UserId;
+				message.success("请求成功");
+				this.setModalVisible(false);
+			})
+			.catch((e)=>{
+				message.success("请求失败");
+				this.setModalVisible(false);
+				console.error(e);
+			})		
 	};
 	callback(key){
 		if(key == 1){
@@ -71,6 +87,15 @@ class PCHeader extends React.Component
 		}else{
 			this.setState({action:'register'})
 		}
+	};
+	logout(){
+		this.setState({
+			hasLogined: false,
+			userNickName: '',
+			userid: 0
+		})
+		localStorage.userNickName = '';
+		localStorage.userid = '';
 	};
 	render(){
 		let {getFieldDecorator} = this.props.form;
@@ -81,7 +106,7 @@ class PCHeader extends React.Component
 		<Link target="_blank">
 			<Button type="dashed" htmlType="button">个人中心</Button>
 		</Link>
-		<Button type="dashed" htmlType="button">登出</Button>
+		<Button type="dashed" htmlType="button" onClick={this.logout.bind(this)}>登出</Button>
 		</Menu.Item>
 		:
 		<Menu.Item key="register" class="register">
@@ -95,7 +120,7 @@ class PCHeader extends React.Component
 			      <Col span={4}>
 					<a href="/">
 						<img src="./src/images/news_logo.png" alt="logo"/>
-						<span>ReactNews</span>
+						<span class="webtitle">ReactNews</span>
 					</a>
 			      </Col>
 			      <Col span={16}>
@@ -126,7 +151,7 @@ class PCHeader extends React.Component
 						</Menu.Item>
 						{userShow}
 					</Menu>
-					<Modal title="用户中心" warpClassName="vertical-center-modal" visible={this.state.modalVisible}
+					<Modal title="用户中心" warpClassName="vertical-center-modal" footer={null} visible={this.state.modalVisible}
 					onOk={this.onhandleOk.bind(this)} onCancel={this.onhandleCancel.bind(this)}>
 					<Tabs type="card" onChange={this.callback.bind(this)}>
 						<TabPane tab="登录" key="1">
